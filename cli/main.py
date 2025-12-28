@@ -1,7 +1,9 @@
 import sys
 
+from core.file_ops import add_file, delete_file
 from core.storage_init import storage_init
 from db.db_init import db_init
+from db.song_repo import insert_song, search_by_id, delete_song
 
 db_init()
 storage_init()
@@ -26,6 +28,17 @@ def print_missing_args(command, required):
     Use 'songstorage help {command}' for details.
     """)
 
+def get_flag_value(args, flag):
+    if flag not in args:
+        return None
+
+    idx = args.index(flag)
+
+    if idx + 1 >= len(args):
+        return None
+
+    return args[idx + 1]
+
 arg_size = len(sys.argv)
 
 if arg_size == 1:
@@ -41,30 +54,55 @@ if command not in VALID_COMMANDS:
 
 if command == 'add':
     required = ['--file', '--artist', '--title']
-    if not all(r in args for r in required):
+
+    file = get_flag_value(args, '--file')
+    artist = get_flag_value(args, '--artist')
+    title = get_flag_value(args, '--title')
+
+    if not file or not artist or not title:
         print_missing_args(command, required)
         sys.exit(1)
+
+    filename = add_file(file, artist, title)
+    insert_song(filename, artist, title)
 
 elif command == 'delete':
     required = ['--id']
-    if not all(r in args for r in required):
+
+    song_id = get_flag_value(args, '--id')
+
+    if not song_id:
         print_missing_args(command, required)
         sys.exit(1)
 
+    row = search_by_id(song_id)
+    if not row:
+        print(f"No song found with id {song_id}")
+        sys.exit(1)
+
+    filename = row[0]
+    delete_file(filename)
+    delete_song(song_id)
+
+    print(f"Deleted song {song_id}")
+
 elif command == 'edit':
     required = ['--id']
+
     if not all(r in args for r in required):
         print_missing_args(command, required)
         sys.exit(1)
 
 elif command == 'play':
     required = ['--id']
+
     if not all(r in args for r in required):
         print_missing_args(command, required)
         sys.exit(1)
 
 elif command == 'savelist':
     required = ['--output']
+
     if not all(r in args for r in required):
         print_missing_args(command, required)
         sys.exit(1)
