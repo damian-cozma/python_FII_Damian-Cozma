@@ -5,7 +5,7 @@ from pathlib import Path
 from core.config import STORAGE_PATH
 
 def add_file(file):
-    ALLOWED_FORMATS = ['.mp3', '.waw', '.flac']
+    ALLOWED_FORMATS = ['.mp3', '.wav', '.flac']
     file_path = Path(file)
 
     if not file_path.exists():
