@@ -4,3 +4,4 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DB_PATH = BASE_DIR / "data" / "songs.db"
 STORAGE_PATH = BASE_DIR / "storage"
+SAVELISTS_PATH = BASE_DIR / "savelists"
