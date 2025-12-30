@@ -2,7 +2,8 @@ import sys
 
 from core.cli_messages import print_no_command, print_unknown_command, print_missing_args, format_song_row
 from core.cli_utils import get_flag_value, run_search_from_args
-from core.file_ops import add_file, delete_file, create_savelist
+from core.config import STORAGE_PATH
+from core.file_ops import add_file, delete_file, create_savelist, play_audio
 from core.help_texts import HELP_TEXTS
 from core.savelists_init import savelists_init
 from core.storage_init import storage_init
@@ -154,9 +155,21 @@ elif command == 'savelist':
 elif command == 'play':
     required = ['--id']
 
-    if not all(r in args for r in required):
+    song_id = get_flag_value(args, '--id')
+    if song_id is None:
         print_missing_args(command, required)
         sys.exit(1)
+
+    row = search_by_id(song_id)
+    if row is None:
+        print(f"No song found with id {song_id}")
+        sys.exit(1)
+
+    filename = row[0]
+    file_path = STORAGE_PATH / filename
+
+    print(f"Playing: {filename}")
+    play_audio(file_path)
 
 elif command == 'help':
     if len(args) == 0:

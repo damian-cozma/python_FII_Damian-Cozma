@@ -2,6 +2,8 @@ import shutil
 import sys
 from pathlib import Path
 
+import pygame
+
 from core.config import STORAGE_PATH, SAVELISTS_PATH
 
 
@@ -55,3 +57,11 @@ def create_savelist(name, rows):
             tags = tags if tags else ""
 
             f.write(f"{song_id}|{artist}|{title}|{release_date}|{tags}\n")
+
+def play_audio(file_path):
+    pygame.mixer.init()
+    pygame.mixer.music.load(str(file_path))
+    pygame.mixer.music.play()
+
+    while pygame.mixer.music.get_busy():
+        pygame.time.wait(100)
