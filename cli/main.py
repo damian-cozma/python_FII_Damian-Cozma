@@ -1,5 +1,7 @@
 import sys
 
+from lxml.html.defs import tags
+
 from core.file_ops import add_file, delete_file
 from core.storage_init import storage_init
 from db.db_init import db_init
@@ -59,13 +61,16 @@ if command == 'add':
     artist = get_flag_value(args, '--artist')
     title = get_flag_value(args, '--title')
 
+    release_date = get_flag_value(args, '--release-date')
+    tags = get_flag_value(args, '--tags')
+
     if not file or not artist or not title:
         print_missing_args(command, required)
         sys.exit(1)
 
     filename = add_file(file)
     try:
-        insert_song(filename, artist, title)
+        insert_song(filename, artist, title, release_date, tags)
     except Exception:
         delete_file(filename)
         raise
