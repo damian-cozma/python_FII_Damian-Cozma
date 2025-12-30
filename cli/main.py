@@ -63,8 +63,12 @@ if command == 'add':
         print_missing_args(command, required)
         sys.exit(1)
 
-    filename = add_file(file, artist, title)
-    insert_song(filename, artist, title)
+    filename = add_file(file)
+    try:
+        insert_song(filename, artist, title)
+    except Exception:
+        delete_file(filename)
+        raise
 
 elif command == 'delete':
     required = ['--id']
