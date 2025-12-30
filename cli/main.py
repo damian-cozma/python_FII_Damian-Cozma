@@ -1,7 +1,5 @@
 import sys
 
-from lxml.html.defs import tags
-
 from core.file_ops import add_file, delete_file
 from core.storage_init import storage_init
 from db.db_init import db_init
@@ -68,12 +66,15 @@ if command == 'add':
         print_missing_args(command, required)
         sys.exit(1)
 
-    filename = add_file(file)
+    filename = None
     try:
+        filename = add_file(file)
         insert_song(filename, artist, title, release_date, tags)
-    except Exception:
-        delete_file(filename)
-        raise
+    except Exception as e:
+        if filename:
+            delete_file(filename)
+        print(e)
+        sys.exit(1)
 
 elif command == 'delete':
     required = ['--id']

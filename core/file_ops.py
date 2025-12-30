@@ -9,30 +9,23 @@ def add_file(file):
     file_path = Path(file)
 
     if not file_path.exists():
-        print('''
-        Incorrect path.
-        Use 'songstorage help add' for details.
-        ''')
-        sys.exit(1)
+        raise FileNotFoundError("File not found.")
     elif not file_path.is_file():
-        print('''
-        Careful! You have provided a directory.
-        Use 'songstorage help add' for details.
-        ''')
-        sys.exit(1)
+        raise IsADirectoryError("Provided path is not a file.")
     elif file_path.suffix not in ALLOWED_FORMATS:
-        print(f'''
-        Incompatible format.
-        Available formats: {ALLOWED_FORMATS}
-        ''')
-        sys.exit(1)
+        raise ValueError("Incompatible format.")
     else:
         dest = STORAGE_PATH / file_path.name
+
+        if dest.exists():
+            raise FileExistsError("File already exists.")
+
         shutil.copy2(file_path, dest)
 
     return file_path.name
 
 def delete_file(filename):
     file_path = STORAGE_PATH / filename
+
     if file_path.exists():
         file_path.unlink()
