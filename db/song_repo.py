@@ -80,3 +80,38 @@ def edit_song(song_id, artist=None, title=None, release_date=None, tags=None):
 
     conn.commit()
     conn.close()
+
+def search_by_fields(artist=None, title=None, release_date=None, tags=None):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+
+    if artist is not None:
+        fields.append('artist = ?')
+        values.append(artist)
+
+    if title is not None:
+        fields.append('title = ?')
+        values.append(title)
+
+    if release_date is not None:
+        fields.append('release_date = ?')
+        values.append(release_date)
+
+    if tags is not None:
+        fields.append('tags LIKE ?')
+        values.append(f"%{tags}%")
+
+    if not fields:
+        conn.close()
+        return []
+
+    query = "SELECT * FROM songs WHERE " + ' AND '.join(fields)
+    cursor.execute(query, values)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows

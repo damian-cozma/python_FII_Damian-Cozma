@@ -1,13 +1,13 @@
 import sys
 
-from core.cli_messages import print_no_command, print_unknown_command, print_missing_args
+from core.cli_messages import print_no_command, print_unknown_command, print_missing_args, format_song_row
 from core.cli_utils import get_flag_value
 from core.file_ops import add_file, delete_file
 from core.help_texts import HELP_TEXTS
 from core.storage_init import storage_init
 from core.validators import validate_release_date, validate_tags
 from db.db_init import db_init
-from db.song_repo import insert_song, search_by_id, delete_song, edit_song
+from db.song_repo import insert_song, search_by_id, delete_song, edit_song, search_by_fields
 
 db_init()
 storage_init()
@@ -107,6 +107,24 @@ elif command == 'edit':
 
     edit_song(song_id, artist, title, release_date, tags)
 
+elif command == 'search':
+    artist = get_flag_value(args, '--artist')
+    title = get_flag_value(args, '--title')
+    release_date = get_flag_value(args, '--release-date')
+    tags = get_flag_value(args, '--tags')
+
+    if artist is None and title is None and release_date is None and tags is None:
+        print('You must provide at least one field.')
+        sys.exit(1)
+
+    rows = search_by_fields(artist, title, release_date, tags)
+    if not rows:
+        print('No results found.')
+        sys.exit(0)
+
+    for row in rows:
+        print(format_song_row(row))
+
 elif command == 'play':
     required = ['--id']
 
@@ -120,9 +138,6 @@ elif command == 'savelist':
     if not all(r in args for r in required):
         print_missing_args(command, required)
         sys.exit(1)
-
-elif command == 'search':
-    pass
 
 elif command == 'help':
     if len(args) == 0:
