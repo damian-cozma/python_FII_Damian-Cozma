@@ -1,43 +1,17 @@
 import sys
 
+from core.cli_messages import print_no_command, print_unknown_command, print_missing_args
+from core.cli_utils import get_flag_value
 from core.file_ops import add_file, delete_file
+from core.help_texts import HELP_TEXTS
 from core.storage_init import storage_init
+from core.validators import validate_release_date, validate_tags
 from db.db_init import db_init
-from db.song_repo import insert_song, search_by_id, delete_song
+from db.song_repo import insert_song, search_by_id, delete_song, edit_song
 
 db_init()
 storage_init()
 VALID_COMMANDS = ['add', 'delete', 'edit', 'search', 'savelist', 'play', 'help']
-
-def print_no_command():
-    print("""
-    No command provided.
-    Use 'songstorage help' to see available commands.
-    """)
-
-def print_unknown_command(given_command):
-    print(f'''
-    Unknown command: {given_command}
-    Use 'songstorage help' to see available commands.
-    ''')
-
-def print_missing_args(command, required):
-    print(f"""
-    Missing required arguments for '{command}'.
-    Required: {', '.join(required)}
-    Use 'songstorage help {command}' for details.
-    """)
-
-def get_flag_value(args, flag):
-    if flag not in args:
-        return None
-
-    idx = args.index(flag)
-
-    if idx + 1 >= len(args):
-        return None
-
-    return args[idx + 1]
 
 arg_size = len(sys.argv)
 
@@ -58,12 +32,20 @@ if command == 'add':
     file = get_flag_value(args, '--file')
     artist = get_flag_value(args, '--artist')
     title = get_flag_value(args, '--title')
-
     release_date = get_flag_value(args, '--release-date')
     tags = get_flag_value(args, '--tags')
 
-    if not file or not artist or not title:
+    if file is None or artist is None or title is None:
         print_missing_args(command, required)
+        sys.exit(1)
+
+    try:
+        if release_date is not None:
+            validate_release_date(release_date)
+        if tags is not None:
+            validate_tags(tags)
+    except ValueError as e:
+        print(e)
         sys.exit(1)
 
     filename = None
@@ -81,12 +63,12 @@ elif command == 'delete':
 
     song_id = get_flag_value(args, '--id')
 
-    if not song_id:
+    if song_id is None:
         print_missing_args(command, required)
         sys.exit(1)
 
     row = search_by_id(song_id)
-    if not row:
+    if row is None:
         print(f"No song found with id {song_id}")
         sys.exit(1)
 
@@ -99,9 +81,31 @@ elif command == 'delete':
 elif command == 'edit':
     required = ['--id']
 
-    if not all(r in args for r in required):
+    song_id = get_flag_value(args, '--id')
+
+    artist = get_flag_value(args, '--artist')
+    title = get_flag_value(args, '--title')
+    release_date = get_flag_value(args, '--release-date')
+    tags = get_flag_value(args, '--tags')
+
+    if song_id is None:
         print_missing_args(command, required)
         sys.exit(1)
+
+    if artist is None and title is None and release_date is None and tags is None:
+        print('You must provide at least one field.')
+        sys.exit(1)
+
+    try:
+        if release_date is not None:
+            validate_release_date(release_date)
+        if tags is not None:
+            validate_tags(tags)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
+
+    edit_song(song_id, artist, title, release_date, tags)
 
 elif command == 'play':
     required = ['--id']
@@ -122,73 +126,7 @@ elif command == 'search':
 
 elif command == 'help':
     if len(args) == 0:
-        print('''
-            Available commands:
-        add        Add a new song
-        delete     Delete a song by ID
-        edit       Edit song metadata
-        search     Search songs
-        savelist   Create a playlist archive
-        play       Play a song
-        help       Show help
-        
-        Use 'songstorage help <command>' for details.
-        ''')
+        print(HELP_TEXTS["main"])
     else:
         help_cmd = args[0]
-
-        if help_cmd == 'add':
-            print("""
-        Usage:
-        songstorage add --file PATH --artist TEXT --title TEXT
-                       [--release-date DATE]
-                       [--tags TAGS]
-            """)
-
-        elif help_cmd == 'delete':
-            print("""
-        Usage:
-        songstorage delete --id ID
-            """)
-
-        elif help_cmd == 'edit':
-            print("""
-        Usage:
-        songstorage edit --id ID
-                        [--artist TEXT]
-                        [--title TEXT]
-                        [--release-date DATE]
-                        [--tags TAGS]
-
-        Note:
-        At least one field must be provided for update.
-            """)
-
-        elif help_cmd == 'search':
-            print("""
-        Usage:
-        songstorage search [--artist TEXT]
-                           [--title TEXT]
-                           [--format FORMAT]
-                           [--tags TAG]
-            """)
-
-        elif help_cmd == 'savelist':
-            print("""
-        Usage:
-        songstorage savelist --output NAME
-                             [search filters...]
-            """)
-
-        elif help_cmd == 'play':
-            print("""
-        Usage:
-        songstorage play --id ID
-            """)
-
-        elif help_cmd == 'help':
-            print("""
-        Usage:
-        songstorage help
-        songstorage help <command>
-            """)
+        print(HELP_TEXTS.get(help_cmd, HELP_TEXTS["main"]))

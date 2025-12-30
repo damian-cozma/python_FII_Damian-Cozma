@@ -45,3 +45,38 @@ def delete_song(song_id):
 
     conn.commit()
     conn.close()
+
+def edit_song(song_id, artist=None, title=None, release_date=None, tags=None):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+
+    if artist is not None:
+        fields.append('artist = ?')
+        values.append(artist)
+
+    if title is not None:
+        fields.append('title = ?')
+        values.append(title)
+
+    if release_date is not None:
+        fields.append('release_date = ?')
+        values.append(release_date)
+
+    if tags is not None:
+        fields.append('tags = ?')
+        values.append(tags)
+
+    values.append(song_id)
+
+    if not fields:
+        conn.close()
+        return
+
+    query = "UPDATE songs SET " + ', '.join(fields) + " WHERE id = ?"
+    cursor.execute(query, values)
+
+    conn.commit()
+    conn.close()
