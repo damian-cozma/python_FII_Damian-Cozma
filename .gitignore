@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 .env
 data/songs.db
+songstorage.log
+pyproject.toml
+songstorage.egg-info
