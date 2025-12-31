@@ -144,8 +144,6 @@ def main():
 
         edit_song(song_id, artist, title, release_date, tags)
 
-        print(f"Updated song {song_id}")
-
         updated_fields = [k for k, v in {
             "artist": artist,
             "title": title,
@@ -153,6 +151,10 @@ def main():
             "tags": tags
         }.items() if v is not None]
 
+        print(f"Song updated successfully on the following field(s):", end=' ')
+        for field in updated_fields:
+            print(field, end=' ')
+        print()
         logger.info(f"EDIT success | id={song_id} | fields={updated_fields}")
 
     elif command == 'search':
@@ -205,7 +207,7 @@ def main():
             logger.error(f"SAVELIST failed | output={output} | already exists")
             sys.exit(1)
 
-        print(f'Created savelist \'{output}\' with {len(rows)} songs.')
+        print(f'Created savelist \'{output}\' with {len(rows)} song(s).')
         logger.info(f"SAVELIST success | output={output} | songs={len(rows)}")
 
     elif command == 'play':

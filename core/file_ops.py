@@ -38,7 +38,7 @@ def create_savelist(name, rows):
     playlist_path = file_path / "playlist.txt"
 
     if file_path.exists():
-        raise FileExistsError("Directory already exists.")
+        raise FileExistsError("Savelist already exists.")
 
     file_path.mkdir(parents=True)
 

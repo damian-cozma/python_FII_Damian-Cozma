@@ -20,6 +20,10 @@ Usage:
 songstorage add --file PATH --artist TEXT --title TEXT
                [--release-date DATE]
                [--tags TAGS]
+               
+Note:
+Release date must be in YYYY-MM-DD format.
+Tags must be quoted and separated by commas.
 """,
 
     "delete": """
@@ -34,9 +38,11 @@ songstorage edit --id ID
                 [--title TEXT]
                 [--release-date DATE]
                 [--tags TAGS]
-
+                
 Note:
 At least one field must be provided for update.
+Release date must be in YYYY-MM-DD format.
+Tags must be quoted and separated by commas.
 """,
 
     "search": """
