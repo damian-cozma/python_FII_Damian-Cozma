@@ -1,7 +1,7 @@
-import shutil
-import sys
+import shutil, os
 from pathlib import Path
 
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 
 from core.config import STORAGE_PATH, SAVELISTS_PATH
