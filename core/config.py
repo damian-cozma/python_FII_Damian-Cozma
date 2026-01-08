@@ -16,11 +16,17 @@ SAVELISTS_PATH = BASE_DIR / "savelists"
 def storage_init():
     """
     Initialize the storage directory used for storing audio files.
+
+    It ensures that all missing parent directories are created as needed,
+    while preventing an error from being raised if the directory already exists.
     """
     STORAGE_PATH.mkdir(parents=True, exist_ok=True)
 
 def savelists_init():
     """
     Initialize the directory used for storing savelist archives.
+
+    It ensures that all missing parent directories are created as needed,
+    while preventing an error from being raised if the directory already exists.
     """
     SAVELISTS_PATH.mkdir(parents=True, exist_ok=True)
