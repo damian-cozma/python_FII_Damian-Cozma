@@ -1,4 +1,12 @@
-import shutil, os
+"""
+Filesystem and audio operations for the SongStorage application.
+
+This module provides low-level utilities for managing audio files in the
+storage directory, creating savelist archives, and handling audio playback.
+"""
+
+import shutil
+import os
 from pathlib import Path
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
@@ -8,6 +16,11 @@ from core.config import STORAGE_PATH, SAVELISTS_PATH
 
 
 def add_file(file):
+    """
+    Copy an audio file into the storage directory after validation.
+
+    Supported formats are MP3, WAV, and FLAC.
+    """
     ALLOWED_FORMATS = ['.mp3', '.wav', '.flac']
     file_path = Path(file)
 
@@ -28,12 +41,21 @@ def add_file(file):
     return file_path.name
 
 def delete_file(filename):
+    """
+    Delete an audio file from the storage directory.
+    """
     file_path = STORAGE_PATH / filename
 
     if file_path.exists():
         file_path.unlink()
 
 def create_savelist(name, rows):
+    """
+    Create a savelist archive containing selected songs.
+
+    The savelist directory will include all matching audio files and a
+    playlist.txt file with song metadata.
+    """
     file_path = SAVELISTS_PATH / name
     playlist_path = file_path / "playlist.txt"
 
@@ -59,6 +81,11 @@ def create_savelist(name, rows):
             f.write(f"{song_id}|{artist}|{title}|{release_date}|{tags}\n")
 
 def play_audio(file_path):
+    """
+        Play an audio file using the pygame mixer.
+
+        This function blocks execution until playback is finished.
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(str(file_path))
     pygame.mixer.music.play()

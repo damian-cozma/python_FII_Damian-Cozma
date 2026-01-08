@@ -1,3 +1,11 @@
+"""
+Static help text definitions for the SongStorage CLI.
+
+This module contains user-facing help messages for all supported
+commands. The texts are displayed by the CLI layer and do not contain
+any application logic.
+"""
+
 HELP_TEXTS = {
     "main": """
 Available commands:

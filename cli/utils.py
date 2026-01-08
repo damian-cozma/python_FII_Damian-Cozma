@@ -1,7 +1,14 @@
-from db.song_repo import search_by_fields
+"""
+CLI utility helpers for argument parsing.
 
+This module contains helper functions used by the command-line interface
+to extract and process command-line flags.
+"""
 
 def get_flag_value(args, flag):
+    """
+    Retrieve the value associated with a CLI flag.
+    """
     if flag not in args:
         return None
 

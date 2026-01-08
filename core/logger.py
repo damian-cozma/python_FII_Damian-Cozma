@@ -1,3 +1,10 @@
+"""
+Logging configuration for the SongStorage application.
+
+This module initializes and exposes a shared logger instance used
+across the application for recording operational events and errors.
+"""
+
 import logging
 from pathlib import Path
 

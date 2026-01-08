@@ -1,3 +1,11 @@
+"""
+CLI controller for the SongStorage application.
+
+This module defines the SongCLI class, responsible for parsing command-line
+arguments, validating user input, and delegating operations to the service
+layer. It represents the presentation and control layer of the application.
+"""
+
 import sys
 
 from cli.ui.cli_messages import (
@@ -14,11 +22,24 @@ from core.service import SongService
 
 
 class SongCLI:
+    """
+    CLI controller for the SongStorage application.
+
+    This module defines the SongCLI class, responsible for parsing command-line
+    arguments, validating user input, and delegating operations to the service
+    layer. It represents the presentation and control layer of the application.
+    """
     def __init__(self):
+        """
+        Initialize the CLI controller and its associated service layer.
+        """
         self.service = SongService()
         self.VALID_COMMANDS = ['add', 'delete', 'edit', 'search', 'savelist', 'play', 'help']
 
     def run(self, argv):
+        """
+        Entry point for processing command-line arguments.
+        """
         if len(argv) == 1:
             print_no_command()
             sys.exit(1)
@@ -38,6 +59,9 @@ class SongCLI:
         handler(args)
 
     def handle_add(self, args):
+        """
+        Handle the 'add' command for adding a new song to the storage.
+        """
         required = ['--file', '--artist', '--title']
 
         file = get_flag_value(args, '--file')
@@ -70,6 +94,9 @@ class SongCLI:
         logger.info(f"ADD success | artist={artist} | title={title}")
 
     def handle_delete(self, args):
+        """
+        Handle the 'delete' command for removing a song by its ID.
+        """
         required = ['--id']
 
         song_id = get_flag_value(args, '--id')
@@ -97,6 +124,9 @@ class SongCLI:
         logger.info(f"DELETE success | id={song_id}")
 
     def handle_edit(self, args):
+        """
+        Handle the 'edit' command for updating song metadata.
+        """
         required = ['--id']
 
         song_id = get_flag_value(args, '--id')
@@ -158,6 +188,9 @@ class SongCLI:
         logger.info(f"EDIT success | id={song_id} | fields={updated_fields}")
 
     def handle_search(self, args):
+        """
+        Handle the 'search' command for querying songs by metadata fields.
+        """
         logger.info(f"SEARCH command started | args={args}")
 
         artist = get_flag_value(args, '--artist')
@@ -189,6 +222,10 @@ class SongCLI:
         logger.info(f"SEARCH success | results={len(rows)}")
 
     def handle_savelist(self, args):
+        """
+        Handle the 'savelist' command for creating a playlist archive
+        from search results.
+        """
         required = ['--output']
 
         output = get_flag_value(args, '--output')
@@ -237,6 +274,9 @@ class SongCLI:
         logger.info(f"SAVELIST success | output={output} | songs={len(rows)}")
 
     def handle_play(self, args):
+        """
+        Handle the 'play' command for audio playback of a song by ID.
+        """
         required = ['--id']
 
         song_id = get_flag_value(args, '--id')
@@ -263,6 +303,9 @@ class SongCLI:
         logger.info(f"PLAY success | id={song_id}")
 
     def handle_help(self, args):
+        """
+        Display help information for available commands or a specific command.
+        """
         logger.info(f"HELP command started | args={args}")
 
         if len(args) == 0:

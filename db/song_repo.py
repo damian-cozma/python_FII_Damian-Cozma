@@ -1,9 +1,20 @@
+"""
+Database access layer for the SongStorage application.
+
+This module contains low-level functions responsible for interacting
+with the SQLite database, including CRUD operations and search queries
+for song records.
+"""
+
 from datetime import datetime
 import sqlite3
 
 from core.config import DB_PATH
 
 def insert_song(filename, artist, title, release_date=None, tags=None):
+    """
+    Insert a new song record into the database.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -27,6 +38,9 @@ def insert_song(filename, artist, title, release_date=None, tags=None):
     return song_id
 
 def search_by_id(song_id):
+    """
+    Retrieve the filename of a song by its ID.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -38,6 +52,9 @@ def search_by_id(song_id):
     return row
 
 def delete_song(song_id):
+    """
+    Delete a song record from the database by ID.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -47,6 +64,9 @@ def delete_song(song_id):
     conn.close()
 
 def edit_song(song_id, artist=None, title=None, release_date=None, tags=None):
+    """
+    Update one or more metadata fields for an existing song.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -82,6 +102,9 @@ def edit_song(song_id, artist=None, title=None, release_date=None, tags=None):
     conn.close()
 
 def search_by_fields(artist=None, title=None, release_date=None, tags=None):
+    """
+    Search for songs matching the provided metadata filters.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -117,6 +140,9 @@ def search_by_fields(artist=None, title=None, release_date=None, tags=None):
     return rows
 
 def search_all():
+    """
+    Retrieve all song records from the database.
+    """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
