@@ -115,3 +115,13 @@ def search_by_fields(artist=None, title=None, release_date=None, tags=None):
     conn.close()
 
     return rows
+
+def search_all():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM songs")
+    rows = cursor.fetchall()
+
+    conn.close()
+    return rows

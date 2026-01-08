@@ -165,11 +165,6 @@ class SongCLI:
         release_date = get_flag_value(args, '--release-date')
         tags = get_flag_value(args, '--tags')
 
-        if artist is None and title is None and release_date is None and tags is None:
-            print("You must provide at least one search field.")
-            logger.error("SEARCH failed | no search fields provided")
-            sys.exit(1)
-
         try:
             rows = self.service.search(
                 artist=artist,
