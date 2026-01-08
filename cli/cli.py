@@ -1,13 +1,13 @@
 import sys
 
-from core.cli_messages import (
+from cli.ui.cli_messages import (
     print_no_command,
     print_unknown_command,
     print_missing_args,
     format_song_row
 )
-from core.cli_utils import get_flag_value, run_search_from_args
-from core.help_texts import HELP_TEXTS
+from cli.utils import get_flag_value
+from cli.ui.help_texts import HELP_TEXTS
 from core.validators import validate_release_date, validate_tags
 from core.logger import logger
 from core.service import SongService

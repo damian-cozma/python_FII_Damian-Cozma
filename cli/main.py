@@ -1,10 +1,8 @@
 import sys
 
 from cli.cli import SongCLI
+from core.config import storage_init, savelists_init
 from db.db_init import db_init
-from core.storage_init import storage_init
-from core.savelists_init import savelists_init
-
 
 def main():
     db_init()
