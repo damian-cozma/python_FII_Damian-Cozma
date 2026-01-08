@@ -43,12 +43,16 @@ def format_song_row(row):
     title = row[3]
     release_date = row[4]
     tags = row[5]
+    format_ = row[6]
 
     line = f"[{song_id}] {artist} - {title}"
-    if release_date is not None:
+    if release_date:
         line += f" ({release_date})"
 
     if tags:
         line += f" [{tags}]"
+
+    if format_:
+        line += f" [{format_}]"
 
     return line

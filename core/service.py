@@ -47,7 +47,7 @@ class SongService:
 
         edit_song(song_id, artist, title, release_date, tags)
 
-    def search(self, artist=None, title=None, release_date=None, tags=None):
+    def search(self, artist=None, title=None, release_date=None, tags=None, format=None):
         """
         Search for songs using optional metadata filters.
 
@@ -60,7 +60,8 @@ class SongService:
             artist=artist,
             title=title,
             release_date=release_date,
-            tags=tags
+            tags=tags,
+            format=format
         )
 
     def play_song(self, song_id):

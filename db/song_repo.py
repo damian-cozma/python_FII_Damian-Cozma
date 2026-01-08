@@ -101,7 +101,7 @@ def edit_song(song_id, artist=None, title=None, release_date=None, tags=None):
     conn.commit()
     conn.close()
 
-def search_by_fields(artist=None, title=None, release_date=None, tags=None):
+def search_by_fields(artist=None, title=None, release_date=None, tags=None, format=None):
     """
     Search for songs matching the provided metadata filters.
     """
@@ -126,6 +126,10 @@ def search_by_fields(artist=None, title=None, release_date=None, tags=None):
     if tags is not None:
         fields.append('tags LIKE ?')
         values.append(f"%{tags}%")
+
+    if format is not None:
+        fields.append('format = ?')
+        values.append(format)
 
     if not fields:
         conn.close()

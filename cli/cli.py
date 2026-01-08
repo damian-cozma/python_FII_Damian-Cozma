@@ -197,13 +197,15 @@ class SongCLI:
         title = get_flag_value(args, '--title')
         release_date = get_flag_value(args, '--release-date')
         tags = get_flag_value(args, '--tags')
+        format_ = get_flag_value(args, '--format')
 
         try:
             rows = self.service.search(
                 artist=artist,
                 title=title,
                 release_date=release_date,
-                tags=tags
+                tags=tags,
+                format=format_
             )
 
         except Exception as e:
